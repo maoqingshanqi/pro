@@ -16,8 +16,27 @@ function setup(){
   // ここからが本番
   fill(0);
   const dx = width / scores.length;
+  // const h = height * scores[i] / 100;
   let px, py; // 線を引くために一つ前の点を覚えておく変数
-  for(let i = 0; i < scores.length; i++){
-    // BLANK[1]
+  for(let i = 0; i < scores.length  ; i++){
+    strokeWeight(1)
+    let X = i*dx+15;
+    let Y = height*scores[i]/100
+    px = (i+1)*dx+15
+    py = scores[i+1] * height /100
+    if(i >= 0  && i < scores.length-1){
+     
+      line(px,py,X,Y)
+      
+    }
+    if(i>=0){
+      ellipse(X,Y,5)
+    }
+       
+
+    
+   
+    
+    
   }
 }
