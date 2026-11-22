@@ -36,13 +36,14 @@ let direction = 1; // 1:右 -1:左
 let bullets = [];
 let inosisis = [];
 let score = 0;
-let life = 5;
+let life = 7;
 let alive = true;
 let beast = false;
+
 // 開始画面用の関数
 function startApp(){
   Name = nameInput.value();
-
+  // ユーザーネームに何かしら書かれていたら
   if(Name !== ''){
     // 変数をリセットして１ページ目にもどる
     page = 1;
@@ -64,7 +65,7 @@ function startApp(){
     bullets = [];
     inosisis = [];
     score = 0;
-    life = 5;
+    life = 7;
     alive = true;
     beast = false;
     message1 = '';
@@ -257,7 +258,7 @@ if(page == 8){
 if(page == 9){
   give_message();
   rep_cont();
-  messageSelect2.show()
+  messageSelect2.show();
   fill(75);
   rect(width/2-height/20,height*15.5/20,height*2/20,height*0.5/20,7);
   fill(255);
@@ -268,7 +269,7 @@ if(page == 9){
 if(page == 10){
   give_message();
   rep_cont();
-  messageSelect3.show()
+  messageSelect3.show();
   fill(75);
   rect(width/2-height/20,height*15.5/20,height*2/20,height*0.5/20,7);
   fill(255);
@@ -465,7 +466,7 @@ if(page == 223){
     textStyle(NORMAL);
     textAlign(CENTER,CENTER);
     textSize(height/40);
-    text('夜のキャンパスを歩いていると、案の定イノシシにでくわしました。\n銃の腕前を魅せ、教授のハートも打ち抜きましょう。\n← →で方向を変え、上矢印↑で撃ちます。\n下矢印↓をクリックして始めましょう。',width/2,height/2.5);
+    text('夜のキャンパスを歩いていると、案の定イノシシにでくわしました。\n銃の腕前を魅せ、教授のハートも打ち抜きましょう。\n← →で方向を変え、上矢印スペースキーで撃ちます。\n下矢印↓をクリックして始めましょう。',width/2,height/2.5);
     if(keyIsDown(DOWN_ARROW)){
       page = 233;
     } 
@@ -485,7 +486,7 @@ if(page == 233){
   
   if(beast){
   inosisi(0,-height/40,height/40);
-  // ライフが0で倒れちゃう
+  // ライフが0で倒れちゃう（こだわりポイント）
   }else{
   rotate(angle2);
   player(0,0,100);
@@ -499,11 +500,12 @@ if(page == 233){
   if(keyIsDown(LEFT_ARROW)){
     direction = -1;
   }
-  if(alive && !finished){
-    if(keyIsDown(UP_ARROW)&&frameCount % 15 == 0){
-    bullets.push({x:width/2+direction*height/20,y:height*18.65/30,vx:direction * 8})
-  }
-  }
+  // function keyPressed に移行した
+  // if(alive && !finished){
+  //   if(keyIsDown(UP_ARROW)){
+  //   bullets.push({x:width/2+direction*height/20,y:height*18.65/30,vx:direction * 8})
+  // }
+  // }
   
   if(score <= 50){
     // AIにバグの修正を聞いたら↓の方式を勧めてきたので採用
@@ -519,7 +521,7 @@ if(page == 233){
   }
 }
   }
-  if(frameCount % 17 == 0){
+  if(frameCount % 16 == 0 || frameCount % 11 == 0){
   let side = random([0,1]); // 0=左 1=右
   let ino = {
     y: height*2/3 - height/40,
@@ -573,7 +575,7 @@ if(!alive && angle2 < PI/2){
   angle2 += 0.1;
 }
 // イノシシにもまれ続けたら
-if(life <= -50){
+if(life <= -75){
   beast = true;
 }
 // 終了判定
@@ -1506,7 +1508,7 @@ function papa(){
 }
 // 車を作成
 // 時短のためAIに車を作ってもらった
-// 車体は青だったがもっと見にくくなるするため黒に変更
+// 車体は青だったがちょっと見にくくなるするため黒に変更
 function car(x, y, size) {
   push();
   translate(x, y);
@@ -1566,7 +1568,20 @@ function cameraUI(x, y, w, h) {
   line(w - m - len, h - m, w - m, h - m);
   // RECマーク
   noStroke();
-  fill(255, 0, 0);
+  // 点滅させてみた
+  if(progress){
+    if(frameCount % 60 > 30){
+    fill(255, 0, 0);
+  }
+  else{
+    fill(20,75,150);
+  }
+  }
+
+  else{
+    fill(255,0,0);
+  }
+  
   circle(m + 15*s, m + 25*s, 15*s);
   fill(255);
   textSize(22*s);
@@ -1682,7 +1697,15 @@ function rifle(x,y){
   ellipse(0,0,1.5,1.5)
   pop();
 }
-
+function keyPressed(){
+   if(page == 233){
+    if(alive && !finished){
+    if(keyCode == 32){
+    bullets.push({x:width/2+direction*height/20,y:height*18.65/30,vx:direction * 8})
+  }
+  }
+   }
+}
 
 function windowResized(){
   resizeCanvas(windowWidth, windowHeight);
